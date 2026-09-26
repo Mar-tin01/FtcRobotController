@@ -1,28 +1,27 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Martin;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 @Disabled
 @TeleOp
-public class IfPractice extends OpMode {
+public class IfTrain extends OpMode {
+
     @Override
     public void init() {
 
-
     }
+
     @Override
     public void loop() {
-        double turbo = 0.5;
-        double motorSpeed = -gamepad1.left_stick_y;
-        if (!gamepad1.a){
-            motorSpeed *= turbo;
+        boolean a = gamepad1.a;
+        if(a){
+            telemetry.addData("Bouton ", "Pressé");
         }
         else{
-            motorSpeed *= 1;
+            telemetry.addData("Bouton ", "Non Pressé");
         }
+        telemetry.update();
 
-        telemetry.addData("left Stick Value", motorSpeed);
     }
 }
