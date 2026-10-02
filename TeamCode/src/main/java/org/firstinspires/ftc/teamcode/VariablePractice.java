@@ -11,10 +11,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class VariablePractice extends OpMode {
     @Override
     public void init() {
-        int teamnumber = 26762;
-        double motorSpeed = 0.75;
+        int teamnumber = 26796;
+        double motorSpeed = 0.85;
         boolean clawclosed = false;
-        String name = "Martin";
+        String name = "Bastien";
         int degMotor = 100;
 
         telemetry.addData("Team Number", teamnumber);
