@@ -12,7 +12,7 @@ public class VariablePractice extends OpMode {
     @Override
     public void init() {
         int teamnumber = 26796;
-        double motorSpeed = 0.75;
+        double motorSpeed = 0.85;
         boolean clawclosed = false;
         String name = "Bastien";
         int degMotor = 100;
