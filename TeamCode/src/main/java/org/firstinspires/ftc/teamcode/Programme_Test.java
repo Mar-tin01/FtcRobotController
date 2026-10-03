@@ -6,12 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Disabled
 @TeleOp
-public class TeamMemberPractice extends OpMode {
+public class Programme_Test extends OpMode {
+
+    @Override
     public void init() {
 
     }
+
+    @Override
     public void loop() {
 
     }
 }
-
