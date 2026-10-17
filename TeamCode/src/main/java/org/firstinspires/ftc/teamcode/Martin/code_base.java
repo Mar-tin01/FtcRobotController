@@ -20,7 +20,7 @@ public class code_base extends OpMode {
         double stf = gamepad.traiter(gamepad1.right_stick_x);
         double rot = gamepad.traiter(gamepad1.left_stick_x);
 
-        base.drive(fw, stf, rot);
+        base.drive(-fw, stf, rot);
 
     }
 }
