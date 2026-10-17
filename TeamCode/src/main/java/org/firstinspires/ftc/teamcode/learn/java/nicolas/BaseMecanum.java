@@ -1,20 +1,14 @@
 package org.firstinspires.ftc.teamcode.learn.java.nicolas;
 
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-
-import org.opencv.core.Mat;
 
 
-@TeleOp
+
 public class BaseMecanum {
     private DcMotor frontLeftMotor, frontRightMotor, backLeftMotor,backRightMotor ;
-    private IMU imu;
+
 
     public void init(HardwareMap hwMap) {
 
@@ -31,20 +25,15 @@ public class BaseMecanum {
         frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        imu = hwMap.get(IMU.class, "imu");
-
-        RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
 
     }
 
     public void drive( double forward, double straff, double rotation) {
 
         double frontLeftPower = forward + straff + rotation;
-        double backLeftPower = forward + straff - rotation;
+        double backLeftPower = forward - straff + rotation;
         double frontRightPower = forward - straff - rotation;
-        double backRightPower = forward - straff + rotation;
+        double backRightPower = forward + straff - rotation;
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;
@@ -60,17 +49,8 @@ public class BaseMecanum {
         frontRightMotor.setPower(maxSpeed *(frontRightPower / maxPower));
         backRightMotor.setPower(maxSpeed * (backRightPower / maxPower));
 
-        drive.init(hardwareMap);
 
     }
 
-    @Override
-    public void loop() {
 
-        forward = gamepad1.left_stick_y;
-        straff = gamepad1.left_stick_x;
-        rotation = gamepad1.right_stick_x;
-
-
-    }
 }
