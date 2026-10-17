@@ -16,8 +16,11 @@ public class code_base extends OpMode {
 
     @Override
     public void loop() {
+        double fw = gamepad.traiter(gamepad1.right_stick_y);
+        double stf = gamepad.traiter(gamepad1.right_stick_x);
+        double rot = gamepad.traiter(gamepad1.left_stick_x);
 
-        base.drive(gamepad1.right_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x);
+        base.drive(fw, stf, rot);
 
     }
 }

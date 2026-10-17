@@ -11,10 +11,10 @@ public class mechanum {
     public final DcMotor backLeft;
 
     public mechanum(HardwareMap hardwareMap){
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left_motor");
-        frontRight =  hardwareMap.get(DcMotor.class, "front_right_motor");
-        backLeft = hardwareMap.get(DcMotor.class, "back_left_motor");
-        backRight = hardwareMap.get(DcMotor.class, "back_right_motor");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        frontRight =  hardwareMap.get(DcMotor.class, "frontRightMotor");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        backRight = hardwareMap.get(DcMotor.class, "backRightMotor");
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
