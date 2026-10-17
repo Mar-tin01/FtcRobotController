@@ -1,12 +1,14 @@
 
         package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-        @TeleOp(name = "Test Avancer")
+@Disabled
+@TeleOp(name = "Test Avancer")
 public class code__avancer_meca_test_moteurs extends OpMode {
 
     DcMotor frontLeftMotor;
