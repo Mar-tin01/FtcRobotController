@@ -30,6 +30,16 @@ public class main extends OpMode {
         straff = gamepad1.right_stick_x;
         rotation = gamepad1.left_stick_x;
 
+        if (gamepad1.dpad_right) {
+            drive.drive(0, 0.5, 0);
+        } else if (gamepad1.dpad_left) {
+            drive.drive(0, -0.5, 0);
+        } else {
+            drive.drive(forward, straff, rotation);
+        }
+        telemetry.addData("forward / straff / rotation", "%.2f / %.2f / %.2f", forward, straff, rotation);
+        telemetry.update();
+
         drive.drive(forward, straff, rotation);
 
 
