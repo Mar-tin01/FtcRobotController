@@ -58,12 +58,12 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Noms identiques a ceux de BaseMecanum (avec des espaces) : ils doivent
+        // Noms identiques a ceux de la configuration du Robot Controller : ils doivent
         // correspondre exactement a la configuration du Robot Controller.
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front left motor");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back left motor");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front right motor");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back right motor");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
 
         // Memes directions que BaseMecanum : les moteurs de gauche sont inverses.
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
