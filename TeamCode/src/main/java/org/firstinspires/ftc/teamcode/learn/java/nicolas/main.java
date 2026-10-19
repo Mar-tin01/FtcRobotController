@@ -5,10 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 @TeleOp
-public class MecanumTeleop extends OpMode {
+public class main extends OpMode {
 
 
     BaseMecanum drive = new BaseMecanum();
+    intake intake = new intake();
 
     double forward, straff, rotation;
 
@@ -16,6 +17,7 @@ public class MecanumTeleop extends OpMode {
     public void init() {
 
         drive.init(hardwareMap);
+        intake.init(hardwareMap);
     }
 
 
@@ -29,6 +31,9 @@ public class MecanumTeleop extends OpMode {
         rotation = gamepad1.right_stick_x;
 
         drive.drive(forward, straff, rotation);
+
+
+        intake.drive(gamepad1.right_bumper);
 
     }
 
