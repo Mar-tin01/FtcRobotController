@@ -26,9 +26,9 @@ public class main extends OpMode {
     @Override
     public void loop() {
 
-        forward = -gamepad1.left_stick_y;
-        straff = gamepad1.left_stick_x;
-        rotation = gamepad1.right_stick_x;
+        forward = -gamepad1.right_stick_y;
+        straff = gamepad1.right_stick_x;
+        rotation = gamepad1.left_stick_x;
 
         drive.drive(forward, straff, rotation);
 
