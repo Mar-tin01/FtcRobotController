@@ -35,20 +35,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
- * OpMode TeleOp pour une base roulante holonome à 4 moteurs (Mecanum ou X-Drive).
+ * OpMode de test de la base mecanum, avec les memes noms de moteurs que BaseMecanum.
  *
- * 1) Axial:    avancer / reculer                 Joystick gauche avant/arrière
- * 2) Lateral:  déplacement latéral (strafe)      Joystick gauche gauche/droite
- * 3) Yaw:      rotation                          Joystick droit gauche/droite
+ * Commandes (memes que ton OpMode "main") :
+ *   Joystick droit avant/arriere : avancer / reculer
+ *   Joystick droit gauche/droite : strafe
+ *   Joystick gauche gauche/droite : rotation
  *
- * Si le robot recule quand on pousse le joystick gauche vers l'avant,
- * inverser la direction des 4 moteurs (FORWARD <-> REVERSE) dans le code ci-dessous.
+ * Test de strafe pur (sans derive du pouce) :
+ *   Croix directionnelle droite / gauche : strafe a 50 % de puissance
  */
 
 @TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
 public class BasicOmniOpMode_Linear extends LinearOpMode {
 
-    // Déclaration des membres de l'OpMode pour chacun des 4 moteurs.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
@@ -58,43 +58,55 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Les noms ci-dessous doivent correspondre exactement à la configuration du robot
-        // sur le Driver Station / Robot Controller.
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
+        // Noms identiques a ceux de BaseMecanum (avec des espaces) : ils doivent
+        // correspondre exactement a la configuration du Robot Controller.
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "front left motor");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "back left motor");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "front right motor");
+        backRightDrive = hardwareMap.get(DcMotor.class, "back right motor");
 
-        // Tester les directions des moteurs : si une roue tourne à l'envers quand on pousse
-        // le joystick gauche vers l'avant, inverser sa direction (FORWARD <-> REVERSE).
+        // Memes directions que BaseMecanum : les moteurs de gauche sont inverses.
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        // Attendre le début du match (le pilote appuie sur START)
+        // Meme mode que BaseMecanum
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
         runtime.reset();
 
-        // Boucle principale jusqu'à la fin du match (le pilote appuie sur STOP)
         while (opModeIsActive()) {
             double max;
 
-            // Mode POV : joystick gauche pour avancer/strafer, joystick droit pour tourner.
-            double axial = -gamepad1.left_stick_y;  // pousser vers l'avant donne une valeur négative
-            double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
+            double axial = -gamepad1.right_stick_y;   // avant = valeur negative sur le joystick
+            double lateral = gamepad1.right_stick_x;
+            double yaw = gamepad1.left_stick_x;
 
-            // Combinaison des 3 axes pour obtenir la puissance de chaque roue.
+            // Test de strafe pur avec la croix directionnelle
+            if (gamepad1.dpad_right) {
+                axial = 0;
+                lateral = 0.5;
+                yaw = 0;
+            } else if (gamepad1.dpad_left) {
+                axial = 0;
+                lateral = -0.5;
+                yaw = 0;
+            }
+
             double frontLeftPower = axial + lateral + yaw;
             double frontRightPower = axial - lateral - yaw;
             double backLeftPower = axial - lateral + yaw;
             double backRightPower = axial + lateral - yaw;
 
-            // Normalisation : aucune roue ne doit dépasser 100 % de puissance.
+            // Normalisation : aucune roue ne depasse 100 %
             max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
             max = Math.max(max, Math.abs(backLeftPower));
             max = Math.max(max, Math.abs(backRightPower));
@@ -106,23 +118,13 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 backRightPower /= max;
             }
 
-            // CODE DE TEST (à décommenter uniquement pour vérifier les moteurs un par un) :
-            // chaque bouton doit faire tourner le moteur correspondant vers l'AVANT.
-            /*
-            frontLeftPower  = gamepad1.x ? 1.0 : 0.0;  // X
-            backLeftPower   = gamepad1.a ? 1.0 : 0.0;  // A
-            frontRightPower = gamepad1.y ? 1.0 : 0.0;  // Y
-            backRightPower  = gamepad1.b ? 1.0 : 0.0;  // B
-            */
-
-            // Envoi de la puissance aux roues
             frontLeftDrive.setPower(frontLeftPower);
             frontRightDrive.setPower(frontRightPower);
             backLeftDrive.setPower(backLeftPower);
             backRightDrive.setPower(backRightPower);
 
-            // Affichage du temps de jeu et de la puissance des roues.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("axial / lateral / yaw", "%4.2f / %4.2f / %4.2f", axial, lateral, yaw);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", frontLeftPower, frontRightPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", backLeftPower, backRightPower);
             telemetry.update();
