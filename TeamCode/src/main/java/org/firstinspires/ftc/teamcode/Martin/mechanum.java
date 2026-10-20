@@ -35,29 +35,9 @@ public class mechanum {
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
-
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(LogoFacingDirection.UP, UsbFacingDirection.BACKWARD)));
-        imu.resetYaw();
-    }
-
-    public double Getheading(){
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
     public void drive(double forward, double strafe, double rotate){
-
-
-        if (rotate != 0){
-
-            heading = Getheading();
-
-        } else {
-            double erreur = heading - Getheading();
-
-            while (erreur > 180) {erreur -= 360;}
-            while (erreur < -180) {erreur += 360;}
-
-        }
 
         double fl = forward + strafe + rotate; // 1
         double fr = forward - strafe - rotate; // -1

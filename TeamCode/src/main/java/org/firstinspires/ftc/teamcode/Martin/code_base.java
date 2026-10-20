@@ -31,9 +31,6 @@ public class code_base extends OpMode {
         telemetry.addData("fr", ((DcMotorEx) base.frontRight).getVelocity());
         telemetry.addData("bl", ((DcMotorEx) base.backLeft).getVelocity());
         telemetry.addData("br", ((DcMotorEx) base.backRight).getVelocity());
-
-        telemetry.addData("IMU", base.Getheading());
-
         telemetry.update();
 
     }
