@@ -1,12 +1,6 @@
 package org.firstinspires.ftc.teamcode.Martin;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection;
-
 
 
 public class mechanum {
@@ -15,7 +9,6 @@ public class mechanum {
     public final DcMotor frontRight;
     public final DcMotor backRight;
     public final DcMotor backLeft;
-    public final IMU imu;
     private double heading = 0;
 
     private final static double P = 0.045;
@@ -24,7 +17,6 @@ public class mechanum {
         frontRight =  hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeft = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRight = hardwareMap.get(DcMotor.class, "backRightMotor");
-        imu = hardwareMap.get(IMU.class, "imu");
 
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
