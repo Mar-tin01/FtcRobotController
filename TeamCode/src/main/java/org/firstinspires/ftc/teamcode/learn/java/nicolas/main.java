@@ -21,8 +21,6 @@ public class main extends OpMode {
     }
 
 
-
-
     @Override
     public void loop() {
 
@@ -34,12 +32,8 @@ public class main extends OpMode {
         drive.drive(forward, straff, rotation);
 
 
-        intake.drive(gamepad1.right_bumper);
+        intake.drive(gamepad1.right_bumper, gamepad1.a);
+
 
     }
-
-
-
-
-
 }
