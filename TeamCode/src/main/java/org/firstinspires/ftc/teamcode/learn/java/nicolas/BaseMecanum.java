@@ -31,12 +31,12 @@ public class BaseMecanum {
 
 
 
-    public void drive( double forward, double straff, double rotation) {
+    public void drive( double forward, double strafe, double rotation) {
 
-        double frontLeftPower = forward + straff + rotation;
-        double backLeftPower = forward - straff + rotation;
-        double frontRightPower = forward - straff - rotation;
-        double backRightPower = forward + straff - rotation;
+        double frontLeftPower = forward + strafe + rotation;
+        double backLeftPower = forward - strafe + rotation;
+        double frontRightPower = forward - strafe - rotation;
+        double backRightPower = forward + strafe - rotation;
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;
