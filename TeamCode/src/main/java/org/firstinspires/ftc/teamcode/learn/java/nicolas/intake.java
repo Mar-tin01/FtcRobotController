@@ -17,7 +17,7 @@ public class intake {
         intakeMotor = hdMap.get(DcMotor.class, "intake");
         servoLeftIntake = hdMap.get(CRServo.class, "servoLeftIntake");
         servoRightIntake = hdMap.get(CRServo.class, "servoRightIntake");
-        servoRightIntake.setDirection(CRServo.Direction.REVERSE);
+          servoRightIntake.setDirection(CRServo.Direction.REVERSE);
 
         //intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
