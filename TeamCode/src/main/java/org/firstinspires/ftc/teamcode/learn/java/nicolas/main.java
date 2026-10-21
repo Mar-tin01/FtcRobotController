@@ -10,14 +10,17 @@ public class main extends OpMode {
 
     BaseMecanum drive = new BaseMecanum();
     intake intake = new intake();
+    shooter shooter = new shooter();
 
-    double forward, straff, rotation;
+    double forward, strafe, rotation;
+    double powerServoNectar, powerServoPollen;
 
     @Override
     public void init() {
 
         drive.init(hardwareMap);
         intake.init(hardwareMap);
+        shooter.init(hardwareMap);
     }
 
 
@@ -25,15 +28,20 @@ public class main extends OpMode {
     public void loop() {
 
         forward = -gamepad1.right_stick_y;
-        straff = gamepad1.right_stick_x;
+        strafe = gamepad1.right_stick_x;
         rotation = gamepad1.left_stick_x;
 
+        powerServoNectar = (gamepad1.dpad_right ? 1.0 : 0.0) - (gamepad1.dpad_left ? 1.0 : 0.0);
+        powerServoPollen = (gamepad1.b ? 1.0 : 0.0) - (gamepad1.a ? 1.0 : 0.0);
 
-        drive.drive(forward, straff, rotation);
 
 
-        intake.drive(gamepad1.right_bumper, gamepad1.a);
+        drive.drive(forward, strafe, rotation);
 
+
+        intake.drive(gamepad1.right_trigger, gamepad1.x);
+
+        shooter.drive(gamepad1.right_bumper, gamepad1.left_bumper, powerServoNectar, powerServoPollen);
 
     }
 }
