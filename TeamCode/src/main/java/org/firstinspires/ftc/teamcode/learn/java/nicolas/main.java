@@ -13,7 +13,7 @@ public class main extends OpMode {
     shooter shooter = new shooter();
 
     double forward, strafe, rotation;
-    double powerServoNectar, powerServoPollen;
+    double powerServoNectar, powerServoPollen, powerIntake;
 
     @Override
     public void init() {
@@ -31,15 +31,15 @@ public class main extends OpMode {
         strafe = gamepad1.right_stick_x;
         rotation = gamepad1.left_stick_x;
 
-        powerServoNectar = (gamepad1.dpad_right ? 1.0 : 0.0) - (gamepad1.dpad_left ? 1.0 : 0.0);
+        powerServoNectar = (gamepad1.y ? 1.0 : 0.0) - (gamepad1.x ? 1.0 : 0.0);
         powerServoPollen = (gamepad1.b ? 1.0 : 0.0) - (gamepad1.a ? 1.0 : 0.0);
 
-
+        powerIntake = (gamepad1.right_trigger) -(gamepad1.left_trigger);
 
         drive.drive(forward, strafe, rotation);
 
 
-        intake.drive(gamepad1.right_trigger, gamepad1.x);
+        intake.drive(powerIntake, gamepad1.dpad_left);
 
         shooter.drive(gamepad1.right_bumper, gamepad1.left_bumper, powerServoNectar, powerServoPollen);
 
