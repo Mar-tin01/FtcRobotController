@@ -28,7 +28,7 @@ public class main extends OpMode {
     public void loop() {
 
         forward = -gamepad1.right_stick_y;
-        strafe = gamepad1.right_stick_x;
+        strafe = -gamepad1.right_stick_x;
         rotation = gamepad1.left_stick_x;
 
         powerServoNectar = (gamepad1.y ? 1.0 : 0.0) - (gamepad1.x ? 1.0 : 0.0);
