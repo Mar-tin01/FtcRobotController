@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode.Martin;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp (name = "base")
 public class code_base extends OpMode {
     private mechanum base;
+
+    private Odometrie odo;
+
     private gamepad fwFiltre = new gamepad();
     private gamepad stfFiltre = new gamepad();
     private gamepad rotFiltre = new gamepad();
+
+    double Xoffset = 0;
+    double Yoffset = 0;
 
 
 
@@ -18,6 +22,7 @@ public class code_base extends OpMode {
     @Override
     public void init(){
         base = new mechanum(hardwareMap);
+        odo = new Odometrie(hardwareMap, Xoffset, Yoffset);
     }
 
     @Override
@@ -36,7 +41,17 @@ public class code_base extends OpMode {
         telemetry.addData("fr", ((DcMotorEx) base.frontRight).getVelocity());
         telemetry.addData("bl", ((DcMotorEx) base.backLeft).getVelocity());
         telemetry.addData("br", ((DcMotorEx) base.backRight).getVelocity());
-        telemetry.update();
 
+
+        //  Odometrie
+
+        odo.update();
+        double odoX = odo.getX();
+        double odoY = odo.getY();
+
+        telemetry.addData("X_mm", odoX);
+        telemetry.addData("Y_mm", odoY);
+
+        telemetry.update();
     }
 }
