@@ -25,7 +25,10 @@ public class main extends OpMode {
         drive.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
-        limelight = hardwareMap.get(Limelight3A.class,"limelight");
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+//pas bien compris les 2 ligne en dessous
+        limelight.pipelineSwitch(0);
+        limelight.start();
 
     }
 
@@ -33,22 +36,32 @@ public class main extends OpMode {
     @Override
     public void loop() {
 
+        // 1. Vérifier l'état de la Limelight
+        telemetry.addData("LL connectee", limelight.isConnected());
+
+        // 2. Récupérer le résultat le plus récent
         LLResult result = limelight.getLatestResult();
 
+        // 3. Vérifier si le résultat est valide
         if (result != null && result.isValid()) {
+
             double tx = result.getTx();
             double ty = result.getTy();
 
-            telemetry.addData("Cible", "Detectée");
+            telemetry.addData("Cible", "Detectee");
             telemetry.addData("Tx", tx);
             telemetry.addData("Ty", ty);
-        } else {
-            telemetry.addData("Cible", "Non detectée");
-        }
 
-        telemetry.update();
-        for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
-            telemetry.addData("ID AprilTag", tag.getFiducialId());
+            // 4. Parcourir les AprilTags détectés
+            for (LLResultTypes.FiducialResult tag
+                    : result.getFiducialResults()) {
+
+                telemetry.addData("ID AprilTag",
+                        tag.getFiducialId());
+            }
+
+        } else {
+            telemetry.addData("Cible", "Non detectee");
         }
 
         forward = -gamepad1.right_stick_y;
