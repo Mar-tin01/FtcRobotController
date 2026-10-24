@@ -24,7 +24,7 @@ public class gamepad {
     }
     public double lissage(double cible){
 
-        sortie = sortie + (cible -sortie) * coef;
+        sortie = sortie + (cible - sortie) * coef;
 
         return sortie;
     }

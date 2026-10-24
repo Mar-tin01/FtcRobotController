@@ -13,8 +13,8 @@ public class code_base extends OpMode {
     private gamepad stfFiltre = new gamepad();
     private gamepad rotFiltre = new gamepad();
 
-    double Xoffset = 4;
-    double Yoffset = 0;
+    double Xoffset = 9.1;
+    double Yoffset = -1.1;
 
 
 
@@ -49,8 +49,12 @@ public class code_base extends OpMode {
         double odoX = odo.getX();
         double odoY = odo.getY();
 
+
         telemetry.addData("X_mm", odoX);
         telemetry.addData("Y_mm", odoY);
+        telemetry.addData("Xtick", odo.getTickX());
+        telemetry.addData("Ytick", odo.getTickY());
+
 
         telemetry.update();
     }

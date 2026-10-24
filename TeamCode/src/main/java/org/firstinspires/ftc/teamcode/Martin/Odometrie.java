@@ -3,7 +3,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.M
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
+// -1, -10 ; 4, -14
 
 
 public class Odometrie {
@@ -18,6 +18,7 @@ public class Odometrie {
     private int tickYprec = 0;
     private double CAPprec = 0;
 
+    private boolean premier =true;
 
 
     public Odometrie(HardwareMap hardwareMap, double Xoffset, double Yoffset) {
@@ -28,6 +29,8 @@ public class Odometrie {
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         pinpoint.resetPosAndIMU();
+
+        pinpoint.update();
     }
 
     public void move(double X_mm, double Y_mm, double cap_rad) {
@@ -38,12 +41,22 @@ public class Odometrie {
     }
 
     public void update() {
+
+
         pinpoint.update();
 
         // Valeurs
         int tickX = pinpoint.getEncoderX();
         int tickY = pinpoint.getEncoderY();
         double CAP = pinpoint.getHeading(AngleUnit.RADIANS);
+
+        if (premier) {
+            tickXprec = tickX;
+            tickYprec = tickY;
+            CAPprec = CAP;
+            premier = false;
+            return;
+        }
 
         // Calcul Delta
         double DeltaX = tickX - tickXprec;
@@ -68,8 +81,8 @@ public class Odometrie {
         double arcX = Xoffset * DeltaCap;
         double arcY = Yoffset * DeltaCap;
 
-        double X_mm = DeltaX * mm_par_tick + arcX;
-        double Y_mm = DeltaY * mm_par_tick - arcY;
+        double X_mm = DeltaX * mm_par_tick - arcX;
+        double Y_mm = DeltaY * mm_par_tick + arcY;
 
         // Utiliser
 
@@ -81,5 +94,12 @@ public class Odometrie {
     }
     public double getY(){
         return y;
+    }
+
+    public int getTickX(){
+        return tickXprec;
+    }
+    public int getTickY(){
+        return tickYprec;
     }
 }
