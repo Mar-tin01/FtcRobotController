@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Martin;
 public class gamepad {
     private static final double DEADZONE = 0.05;
     private static final double pow = 4;
-    private static final double coef = 0.2;
+    private static final double coef = 0.85;
     double sortie = 0;
     double x = 0;
 

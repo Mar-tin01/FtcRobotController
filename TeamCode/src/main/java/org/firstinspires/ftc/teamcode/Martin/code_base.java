@@ -13,7 +13,7 @@ public class code_base extends OpMode {
     private gamepad stfFiltre = new gamepad();
     private gamepad rotFiltre = new gamepad();
 
-    double Xoffset = 0;
+    double Xoffset = 4;
     double Yoffset = 0;
 
 
