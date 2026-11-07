@@ -9,6 +9,8 @@ public class code_base extends OpMode {
 
     private Odometrie odo;
 
+    private Batterie batterie;
+
     private gamepad fwFiltre = new gamepad();
     private gamepad stfFiltre = new gamepad();
     private gamepad rotFiltre = new gamepad();
@@ -21,6 +23,7 @@ public class code_base extends OpMode {
 
     @Override
     public void init(){
+        batterie = new Batterie(hardwareMap);
         base = new mechanum(hardwareMap);
         odo = new Odometrie(hardwareMap, Xoffset, Yoffset);
     }
