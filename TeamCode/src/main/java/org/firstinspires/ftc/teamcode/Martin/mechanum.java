@@ -16,10 +16,10 @@ public class mechanum {
     /// Compensation Batterie;
     private Batterie batterie;
     public double Vref = 12.0;
-    public boolean compensation = True;
+    public boolean compensation = true;
     public mechanum(HardwareMap hardwareMap){
 
-        this.batterie
+        this.batterie = batterie;
 
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontRight =  hardwareMap.get(DcMotor.class, "frontRightMotor");

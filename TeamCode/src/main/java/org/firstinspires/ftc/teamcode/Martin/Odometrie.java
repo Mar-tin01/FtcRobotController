@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Martin;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
+
+import android.graphics.Paint;
+
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -95,6 +98,8 @@ public class Odometrie {
     public double getY(){
         return y;
     }
+
+    public double getCap() {return CAPprec; }
 
     public int getTickX(){
         return tickXprec;
