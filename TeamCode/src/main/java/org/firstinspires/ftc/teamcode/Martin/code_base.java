@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode.Martin;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp (name = "base")
+@TeleOp (name = "base_2")
 public class code_base extends OpMode {
     private mechanum base;
 
@@ -19,6 +18,7 @@ public class code_base extends OpMode {
 
     double Xoffset = 9.1;
     double Yoffset = -1.1;
+    private intake monIntake;
 
 
 
@@ -26,8 +26,9 @@ public class code_base extends OpMode {
     @Override
     public void init(){
         batterie = new Batterie(hardwareMap);
-        base = new mechanum(hardwareMap);
+        base = new mechanum(hardwareMap, batterie);
         odo = new Odometrie(hardwareMap, Xoffset, Yoffset);
+        monIntake = new intake(hardwareMap);
     }
 
     @Override
@@ -47,6 +48,8 @@ public class code_base extends OpMode {
         telemetry.addData("bl", ((DcMotorEx) base.backLeft).getVelocity());
         telemetry.addData("br", ((DcMotorEx) base.backRight).getVelocity());
 
+        monIntake.drive(gamepad1.left_trigger, gamepad1.right_trigger);
+
 
         //  Odometrie
 
@@ -64,8 +67,11 @@ public class code_base extends OpMode {
         telemetry.addData("fr RPM", ((DcMotorEx) base.frontRight).getVelocity(AngleUnit.DEGREES) / 6);
         telemetry.addData("bl RPM", ((DcMotorEx) base.backLeft).getVelocity(AngleUnit.DEGREES) / 6);
         telemetry.addData("br RPM", ((DcMotorEx) base.backRight).getVelocity(AngleUnit.DEGREES) / 6);
+        telemetry.addData("intake RPM", monIntake.getRPM());
 
 
         telemetry.update();
     }
+
+
 }

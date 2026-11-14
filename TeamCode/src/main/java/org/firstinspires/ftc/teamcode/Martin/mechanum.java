@@ -13,11 +13,12 @@ public class mechanum {
 
     private final static double P = 0.045;
 
-    /// Compensation Batterie;
+    /// Compensation Batterie
     private Batterie batterie;
-    public double Vref = 12.0;
-    public boolean compensation = true;
-    public mechanum(HardwareMap hardwareMap){
+    public double Vref = 12.0;          // plus bas = robot plus bridé
+    public boolean compensation = true; // false = désactivée
+
+    public mechanum(HardwareMap hardwareMap, Batterie batterie){
 
         this.batterie = batterie;
 
@@ -39,33 +40,30 @@ public class mechanum {
 
     public void drive(double forward, double strafe, double rotate){
 
-        double fl = forward + strafe + rotate; // 1
-        double fr = forward - strafe - rotate; // -1
-        double bl = forward - strafe + rotate; // -1
-        double br = forward + strafe - rotate; // 1
+        double fl = forward + strafe + rotate;
+        double fr = forward - strafe - rotate;
+        double bl = forward - strafe + rotate;
+        double br = forward + strafe - rotate;
 
-
-
-        if(compensation){
+        // Compensation AVANT la normalisation
+        if (compensation) {
             double k = batterie.compenser(1.0, Vref);
             fl *= k;
             fr *= k;
             bl *= k;
             br *= k;
-
         }
+
         double max = 1.0;
-        max = Math.max(max, Math.abs(fl)); // 1
-        max = Math.max(max, Math.abs(fr)); // 1
-        max = Math.max(max, Math.abs(bl)); // 1
-        max = Math.max(max, Math.abs(br)); // 1
+        max = Math.max(max, Math.abs(fl));
+        max = Math.max(max, Math.abs(fr));
+        max = Math.max(max, Math.abs(bl));
+        max = Math.max(max, Math.abs(br));
 
         frontLeft.setPower(fl / max);
         frontRight.setPower(fr / max);
         backLeft.setPower(bl / max);
         backRight.setPower(br / max);
-
-
     }
 
     public void driveField(double forward, double strafe, double rotate, double cap){
