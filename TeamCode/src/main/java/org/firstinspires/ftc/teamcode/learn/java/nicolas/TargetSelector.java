@@ -5,28 +5,24 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 public class TargetSelector {
 
     private final boolean allianceRouge ;
-    private final boolean cotePublic;
 
     public TargetSelector(boolean allianceRouge, boolean cotePublic) {
 
         this.allianceRouge = allianceRouge;
-        this.cotePublic = cotePublic;
 
     }
 
     public boolean isCorrectTag(int id) {
 
         if(allianceRouge) {
-            if (cotePublic) {
-                return id >= 34 && id <= 37;
-            }else {
-                return id >= 30 && id <= 33;
+
+            return id >= 30 && id <= 37;
+
             }
-        } else {
-            if (cotePublic) {
-                return id >= 38 && id <= 41;
-            } else {
-                return id >= 42 && id <= 45;
+         else {
+
+            return id >= 38 && id <= 45;
+
             }
         }
     }

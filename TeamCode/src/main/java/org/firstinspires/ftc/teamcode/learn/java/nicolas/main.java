@@ -10,6 +10,7 @@ public class main extends OpMode {
     intake intake = new intake();
     shooter shooter = new shooter();
     TestLimeLight testLimeLight = new TestLimeLight();
+    TargetSelector targetSelector = new TargetSelector(true);// true = alliance rouge, false = bleue
 
     double forward, strafe, rotation;
     double powerServoNectar, powerServoPollen, powerIntake;
@@ -20,7 +21,7 @@ public class main extends OpMode {
         drive.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
-        testLimeLight.init(hardwareMap);
+        testLimeLight.init(hardwareMap, targetSelector);
 
     }
 

@@ -10,17 +10,18 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 public class TestLimeLight {
 
     Limelight3A limelight;
+    TargetSelector targetSelector;
 
     double rotationAuto = 0.0; // correction de la rotation calculé par le robot
     double meilleurTx = 0.0; // angle horizontal du tag sélectionné
     int meilleurID = -1; //ID du meilleur apriltag detecté (-1 = aucun tag selectionné)
-    double meilleurEcart = Double.MAX_VALUE; // Double.MAX_VALUE = se fait remplacer par le tag le plus proche en degrés horizontaux
     boolean tagDetecte = false; // dès qu'un tag est détecté ça passe à true
 
     // Initialiser la Limelight
-    public void init(HardwareMap hardwareMap) {
+    public void init(HardwareMap hardwareMap, TargetSelector targetSelector) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
+        this.targetSelector = targetSelector;
         // Sélectionner le pipeline 0 puis démarrer la Limelight
         limelight.pipelineSwitch(0);
         limelight.start();
@@ -32,7 +33,6 @@ public class TestLimeLight {
         // Valeurs réinitialisées à chaque boucle
         rotationAuto = 0.0; // correction de la rotation calculée par le robot
         meilleurTx = 0.0; // angle horizontal du tag sélectionné
-        meilleurEcart = Double.MAX_VALUE; // Double.MAX_VALUE = se fait remplacer par le tag le plus proche en degrés horizontaux
         tagDetecte = false; // dès qu'un tag est détecté, ça passe à true
         meilleurID = -1;//réinitialise l'ID du tag selectionné
 
@@ -50,27 +50,22 @@ public class TestLimeLight {
             telemetry.addData("Ty global", ty);
 
             // Chercher le tag le plus proche du centre horizontal
-            for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) { // defini le type d'objet analyser puis le nom donné à les/l'AprilTag(s) en cours de traitement. puis recupere les données
+            LLResultTypes.FiducialResult meilleurTag = targetSelector.choisirMeilleurTag(result.getFiducialResults());
 
-                // difinition des tags
-                int id = tag.getFiducialId();
-                double txTag = tag.getTargetXDegrees();
-                double ecart = Math.abs(txTag); //Math.abs()  =   valeur absolue
+            if(meilleurTag != null) {
+                meilleurTx = meilleurTag.getTargetXDegrees();
+                meilleurID = meilleurTag.getFiducialId();
+                tagDetecte = true;
 
-                telemetry.addData("ID AprilTag", id);
-                telemetry.addData("Tx du tag", txTag);
+                 }
 
-                //choisit le plus centré
-                if (ecart < meilleurEcart) {
-                    meilleurEcart = ecart; // remplace le meilleur écart enregistré par celui du tag que l'on vient de trouver.
-                    meilleurTx = txTag; //mémorise l'angle horizontal du tag sélectionné
-                    meilleurID = id;// memorise l'idée du tag selectionné
-                    tagDetecte = true;
-                }
-            }
+            telemetry.addData("ID AprilTag", meilleurID);
+            telemetry.addData("Tx du tag", meilleurTx);
+
 
         } else {
             telemetry.addData("Cible", "Non detectee");
+
         }
 
         // Calculer la correction avec le tag sélectionné
