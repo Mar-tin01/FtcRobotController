@@ -31,7 +31,7 @@ public class main extends OpMode {
         testLimeLight.update(telemetry);
 
         // Déplacements manuels
-        forward = gamepad1.right_stick_y;
+        forward = - gamepad1.right_stick_y;
         strafe = gamepad1.right_stick_x;
 
         // Rotation manuelle ou automatique
@@ -51,7 +51,9 @@ public class main extends OpMode {
 
         // Envoyer les commandes aux sous-systèmes
         drive.drive(forward, strafe, rotation);
-        intake.drive(powerIntake, gamepad1.dpad_left);
+
+        intake.drive(powerIntake, gamepad1.dpad_right);
+
         shooter.drive(gamepad1.right_bumper, gamepad1.left_bumper, powerServoNectar, powerServoPollen);
 
         telemetry.addData("Mode rotation", gamepad1.dpad_up ? "Automatique" : "Manuel");

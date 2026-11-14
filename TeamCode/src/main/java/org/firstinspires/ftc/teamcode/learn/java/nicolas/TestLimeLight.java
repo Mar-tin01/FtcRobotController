@@ -13,6 +13,7 @@ public class TestLimeLight {
 
     double rotationAuto = 0.0; // correction de la rotation calculé par le robot
     double meilleurTx = 0.0; // angle horizontal du tag sélectionné
+    int meilleurID = -1; //ID du meilleur apriltag detecté (-1 = aucun tag selectionné)
     double meilleurEcart = Double.MAX_VALUE; // Double.MAX_VALUE = se fait remplacer par le tag le plus proche en degrés horizontaux
     boolean tagDetecte = false; // dès qu'un tag est détecté ça passe à true
 
@@ -33,6 +34,7 @@ public class TestLimeLight {
         meilleurTx = 0.0; // angle horizontal du tag sélectionné
         meilleurEcart = Double.MAX_VALUE; // Double.MAX_VALUE = se fait remplacer par le tag le plus proche en degrés horizontaux
         tagDetecte = false; // dès qu'un tag est détecté, ça passe à true
+        meilleurID = -1;//réinitialise l'ID du tag selectionné
 
         // Vérifier la connexion et récupérer le résultat
         telemetry.addData("LL connectee", limelight.isConnected());
@@ -62,6 +64,7 @@ public class TestLimeLight {
                 if (ecart < meilleurEcart) {
                     meilleurEcart = ecart; // remplace le meilleur écart enregistré par celui du tag que l'on vient de trouver.
                     meilleurTx = txTag; //mémorise l'angle horizontal du tag sélectionné
+                    meilleurID = id;// memorise l'idée du tag selectionné
                     tagDetecte = true;
                 }
             }
@@ -78,6 +81,7 @@ public class TestLimeLight {
             rotationAuto = Math.max(-0.3, Math.min(0.3, rotationAuto)); // limite la commande de rotation entre -0.3 et +0.3.
 
             telemetry.addData("Meilleur Tx", meilleurTx);
+            telemetry.addData("meilleurID", meilleurID);
             telemetry.addData("Rotation calculee", rotationAuto);
         } else {
             telemetry.addData("AprilTag", "Aucun tag exploitable");
@@ -87,6 +91,11 @@ public class TestLimeLight {
     // Récupérer la correction calculée
     public double getRotationAuto() {
         return rotationAuto;
+    }
+
+    // recupere l'ID du tag selectionné
+    public int getMeilleurID() {
+        return meilleurID;
     }
 
     // Vérifier si un tag a été détecté
