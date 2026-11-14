@@ -52,8 +52,10 @@ public class TargetSelector {
                 }
             }
         }
-    }
 
+        return meilleurTag;
+
+    }
 
 
 }
