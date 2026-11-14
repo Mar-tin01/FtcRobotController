@@ -3,6 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp (name = "base")
 public class code_base extends OpMode {
     private mechanum base;
@@ -57,6 +59,11 @@ public class code_base extends OpMode {
         telemetry.addData("Y_mm", odoY);
         telemetry.addData("Xtick", odo.getTickX());
         telemetry.addData("Ytick", odo.getTickY());
+
+        telemetry.addData("fl RPM", ((DcMotorEx) base.frontLeft).getVelocity(AngleUnit.DEGREES) / 6);
+        telemetry.addData("fr RPM", ((DcMotorEx) base.frontRight).getVelocity(AngleUnit.DEGREES) / 6);
+        telemetry.addData("bl RPM", ((DcMotorEx) base.backLeft).getVelocity(AngleUnit.DEGREES) / 6);
+        telemetry.addData("br RPM", ((DcMotorEx) base.backRight).getVelocity(AngleUnit.DEGREES) / 6);
 
 
         telemetry.update();

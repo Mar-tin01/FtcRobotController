@@ -67,4 +67,10 @@ public class mechanum {
 
 
     }
+
+    public void driveField(double forward, double strafe, double rotate, double cap){
+        double f = strafe * Math.sin(-cap) + forward * Math.cos(-cap);
+        double s = strafe * Math.cos(-cap) - forward * Math.sin(-cap);
+        drive(f, s, rotate);
+    }
 }
