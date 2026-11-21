@@ -36,14 +36,10 @@ public abstract class main extends OpMode {
         forward = - gamepad1.right_stick_y;
         strafe = gamepad1.right_stick_x;
 
-        // Rotation manuelle ou automatique
-        if (gamepad1.dpad_up) {
-            if (testLimeLight.isTagDetecte()) {
-                rotation = testLimeLight.getRotationAuto();
-            } else {
-                rotation = 0.0;
-            }
-        } else {
+        // rotation automatique seulement si dpad_up est maintenu ET  qu'un tag est detecter
+        if (gamepad1.dpad_up && testLimeLight.isTagDetecte()) {
+            rotation = testLimeLight.getRotationAuto();
+        }else {
             rotation = gamepad1.left_stick_x;
         }
         // Commandes des mécanismes
