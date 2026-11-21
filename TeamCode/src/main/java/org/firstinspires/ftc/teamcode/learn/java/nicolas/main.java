@@ -58,6 +58,7 @@ public class main extends OpMode {
         shooter.drive(gamepad1.right_bumper, gamepad1.left_bumper, powerServoNectar, powerServoPollen);
 
         telemetry.addData("Mode rotation", gamepad1.dpad_up ? "Automatique" : "Manuel");
+        telemetry.addData("Alliance", "Rouge");
         telemetry.update();
     }
 }

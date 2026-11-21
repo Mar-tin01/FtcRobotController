@@ -1,33 +1,28 @@
 package org.firstinspires.ftc.teamcode.learn.java.nicolas;
+
 import java.util.List;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
-//déterminer si un AprilTag correspond à l'alliance du robot.
+
+// Déterminer si un AprilTag correspond à l'alliance du robot
 public class TargetSelector {
 
-    private final boolean allianceRouge ;
+    private final boolean allianceRouge;
 
-    public TargetSelector(boolean allianceRouge, boolean cotePublic) {
-
+    public TargetSelector(boolean allianceRouge) {
         this.allianceRouge = allianceRouge;
-
     }
 
+    // Vérifier si un AprilTag correspond à notre alliance
     public boolean isCorrectTag(int id) {
-
-        if(allianceRouge) {
-
+        if (allianceRouge) {
             return id >= 30 && id <= 37;
-
-            }
-         else {
-
+        } else {
             return id >= 38 && id <= 45;
-
-            }
         }
     }
 
-    public LLResultTypes.FiducialResult choisirMeilleurTag(List<LLResultTypes.FiducialResult> tags){
+    // Choisir parmi les tags de notre alliance celui le plus proche du centre
+    public LLResultTypes.FiducialResult choisirMeilleurTag(List<LLResultTypes.FiducialResult> tags) {
 
         LLResultTypes.FiducialResult meilleurTag = null;
         double meilleurEcart = Double.MAX_VALUE;
@@ -35,13 +30,13 @@ public class TargetSelector {
         for (LLResultTypes.FiducialResult tag : tags) {
             int id = tag.getFiducialId();
 
-            //verifiersi le tag correspond a notre alliance et de notre coté
+            // Vérifier si le tag correspond à notre alliance
             if (isCorrectTag(id)) {
 
                 double txTag = tag.getTargetXDegrees();
                 double ecart = Math.abs(txTag);
 
-                //garder le tag le plus proche du centre
+                // Garder le tag le plus proche du centre
                 if (ecart < meilleurEcart) {
                     meilleurEcart = ecart;
                     meilleurTag = tag;
@@ -50,8 +45,5 @@ public class TargetSelector {
         }
 
         return meilleurTag;
-
     }
-
-
 }
