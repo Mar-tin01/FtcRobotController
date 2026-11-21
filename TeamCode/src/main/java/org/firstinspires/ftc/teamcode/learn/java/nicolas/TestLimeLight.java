@@ -9,8 +9,12 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 public class TestLimeLight {
 
     // Constantes de réglage
-    static final double KP = 0.02;          // gain de la correction proportionnelle
-    static final double ROTATION_MAX = 0.3; // puissance max de la rotation automatique
+    static final double KP = 0.008;          // gain de la correction proportionnelle
+    static final double ROTATION_MAX = 0.15; // puissance max de la rotation automatique
+    static final double DEADBAND = 1.0; //  tolérance en degrés
+    static final double KD = 0.0005;
+    double dernierTx = 0.0;
+    long dernierTemps = 0;
 
     Limelight3A limelight;
     TargetSelector targetSelector;
@@ -70,15 +74,27 @@ public class TestLimeLight {
 
         // Calculer la correction avec le tag sélectionné
         if (tagDetecte) {
-            rotationAuto = KP * meilleurTx;
-            rotationAuto = Math.max(-ROTATION_MAX, Math.min(ROTATION_MAX, rotationAuto));
+
+            // Vitesse de variation de Tx (degrés par seconde)
+            long maintenant = System.nanoTime();
+            double dt = (maintenant - dernierTemps) / 1e9;
+            double derivee = (dernierTemps != 0 && dt > 0 && dt < 0.2) ? (meilleurTx - dernierTx) / dt : 0.0;
+            dernierTx = meilleurTx;
+            dernierTemps = maintenant;
+
+            if (Math.abs(meilleurTx) < DEADBAND) {
+                rotationAuto = 0.0; // assez bien aligné, on arrête de corriger
+            } else {
+                rotationAuto = KP * meilleurTx + KD * derivee;
+                rotationAuto = Math.max(-ROTATION_MAX, Math.min(ROTATION_MAX, rotationAuto));
+            }
 
             telemetry.addData("Rotation calculee", rotationAuto);
+
         } else {
             telemetry.addData("AprilTag", "Aucun tag exploitable");
         }
     }
-
     // Récupérer la correction calculée
     public double getRotationAuto() {
         return rotationAuto;
