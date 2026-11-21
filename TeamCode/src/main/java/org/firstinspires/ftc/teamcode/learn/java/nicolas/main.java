@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode.learn.java.nicolas;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp
-public class main extends OpMode {
+public abstract class main extends OpMode {
+
+    protected boolean allianceRouge; // défini par mainRouge ou mainBleu
 
     BaseMecanum drive = new BaseMecanum();
     intake intake = new intake();
     shooter shooter = new shooter();
     TestLimeLight testLimeLight = new TestLimeLight();
-    TargetSelector targetSelector = new TargetSelector(true);// true = alliance rouge, false = bleue
-
+    TargetSelector targetSelector ;
     double forward, strafe, rotation;
     double powerServoNectar, powerServoPollen, powerIntake;
 
@@ -21,6 +21,7 @@ public class main extends OpMode {
         drive.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
+        targetSelector = new TargetSelector(allianceRouge);
         testLimeLight.init(hardwareMap, targetSelector);
 
     }
@@ -58,7 +59,7 @@ public class main extends OpMode {
         shooter.drive(gamepad1.right_bumper, gamepad1.left_bumper, powerServoNectar, powerServoPollen);
 
         telemetry.addData("Mode rotation", gamepad1.dpad_up ? "Automatique" : "Manuel");
-        telemetry.addData("Alliance", "Rouge");
+        telemetry.addData("Alliance", allianceRouge ? "Rouge" : "Bleue");
         telemetry.update();
     }
 }
