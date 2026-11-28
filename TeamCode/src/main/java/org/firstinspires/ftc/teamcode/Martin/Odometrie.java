@@ -1,111 +1,108 @@
 package org.firstinspires.ftc.teamcode.Martin;
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
 
-import android.graphics.Paint;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-// -1, -10 ; 4, -14
 
-
+// Odométrie calculée à la main à partir des ticks bruts du Pinpoint.
+// Repère : X = avant du robot, Y = gauche, cap anti-horaire positif (radians).
 public class Odometrie {
-    private GoBildaPinpointDriver pinpoint;
-    double Xoffset = 0;
-    double Yoffset = 0;
+
+    // Offsets des pods (mm) par défaut
+    public static final double X_OFFSET_MM = 9.1;
+    public static final double Y_OFFSET_MM = -1.1;
+
+    private final GoBildaPinpointDriver pinpoint;
+    private final double xOffset;
+    private final double yOffset;
+
     private double x;
     private double y;
+
     public final double circonference_mm = 2 * Math.PI * 16;
     public final double mm_par_tick = circonference_mm / 2000;
+
     private int tickXprec = 0;
     private int tickYprec = 0;
-    private double CAPprec = 0;
+    private double capPrec = 0;
 
-    private boolean premier =true;
+    private boolean premier = true;
 
+    public Odometrie(HardwareMap hardwareMap) {
+        this(hardwareMap, X_OFFSET_MM, Y_OFFSET_MM);
+    }
 
-    public Odometrie(HardwareMap hardwareMap, double Xoffset, double Yoffset) {
+    // Le robot doit rester immobile à l'init (calibration de l'IMU)
+    public Odometrie(HardwareMap hardwareMap, double xOffset, double yOffset) {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        this.Xoffset = Xoffset;
-        this.Yoffset = Yoffset;
-        pinpoint.setOffsets(Xoffset, Yoffset, MM);
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+        pinpoint.setOffsets(xOffset, yOffset, MM);
         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.FORWARD);
         pinpoint.resetPosAndIMU();
 
         pinpoint.update();
     }
 
-    public void move(double X_mm, double Y_mm, double cap_rad) {
-
-
-        x += X_mm * Math.cos(cap_rad) - Y_mm * Math.sin(cap_rad);
-        y += X_mm * Math.sin(cap_rad) + Y_mm * Math.cos(cap_rad);
+    // Ajoute un déplacement robot (mm) en le faisant pivoter par le cap donné
+    private void move(double xMm, double yMm, double capRad) {
+        x += xMm * Math.cos(capRad) - yMm * Math.sin(capRad);
+        y += xMm * Math.sin(capRad) + yMm * Math.cos(capRad);
     }
-
 
     public void update() {
 
-
         pinpoint.update();
 
-        // Valeurs
         int tickX = pinpoint.getEncoderX();
         int tickY = pinpoint.getEncoderY();
-        double CAP = pinpoint.getHeading(AngleUnit.RADIANS);
+        double cap = pinpoint.getHeading(AngleUnit.RADIANS);
 
         if (premier) {
             tickXprec = tickX;
             tickYprec = tickY;
-            CAPprec = CAP;
+            capPrec = cap;
             premier = false;
             return;
         }
 
-        // Calcul Delta
-        double DeltaX = tickX - tickXprec;
-        double DeltaY = tickY - tickYprec;
-        double DeltaCap = CAP - CAPprec;
+        // Deltas depuis la dernière mise à jour
+        double deltaX = tickX - tickXprec;
+        double deltaY = tickY - tickYprec;
+        double deltaCap = cap - capPrec;
 
-        // Mise à jour
-        tickXprec = tickX;
-        tickYprec = tickY;
-        CAPprec = CAP;
-
-        if (DeltaCap > Math.PI) {
-            DeltaCap -= 2*Math.PI;
-        } else if (DeltaCap < -Math.PI) {
-            DeltaCap += 2*Math.PI;
+        if (deltaCap > Math.PI) {
+            deltaCap -= 2 * Math.PI;
+        } else if (deltaCap < -Math.PI) {
+            deltaCap += 2 * Math.PI;
         }
 
+        // Cap moyen du pas : plus juste que le cap de fin quand le robot tourne vite
+        double capMoyen = capPrec + deltaCap / 2;
 
+        tickXprec = tickX;
+        tickYprec = tickY;
+        capPrec = cap;
 
-        // Offset
+        // Correction des offsets (les pods bougent aussi quand le robot tourne)
+        // /!\ Signes à valider par le test des 360° sur place : X et Y doivent revenir ~0
+        double arcX = xOffset * deltaCap;
+        double arcY = yOffset * deltaCap;
 
-        double arcX = Xoffset * DeltaCap;
-        double arcY = Yoffset * DeltaCap;
+        double xMm = deltaX * mm_par_tick - arcX;
+        double yMm = deltaY * mm_par_tick + arcY;
 
-        double X_mm = DeltaX * mm_par_tick - arcX;
-        double Y_mm = DeltaY * mm_par_tick + arcY;
-
-        // Utiliser
-
-        move(X_mm, Y_mm, CAP);
+        move(xMm, yMm, capMoyen);
     }
 
-    public double getX(){
-        return x;
-    }
-    public double getY(){
-        return y;
-    }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getCap() { return capPrec; }
 
-    public double getCap() {return CAPprec; }
-
-    public int getTickX(){
-        return tickXprec;
-    }
-    public int getTickY(){
-        return tickYprec;
-    }
+    public int getTickX() { return tickXprec; }
+    public int getTickY() { return tickYprec; }
 }
