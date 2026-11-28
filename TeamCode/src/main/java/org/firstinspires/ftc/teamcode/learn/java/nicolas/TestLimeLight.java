@@ -47,8 +47,7 @@ public class TestLimeLight {
         telemetry.addData("LL connectee", limelight.isConnected());
         LLResult result = limelight.getLatestResult();
 
-        if (result != null && result.isValid()) {
-
+        if (result != null && result.isValid() && result.getStaleness() < 100) {
             double tx = result.getTx(); // angle horizontal global de la cible, en degrés
             double ty = result.getTy(); // angle vertical global de la cible, en degrés
 
@@ -115,5 +114,9 @@ public class TestLimeLight {
         if (limelight != null) {
             limelight.stop();
         }
+    }
+    // Vrai si un tag est visible et centré (dans la zone morte)
+    public boolean isAligne() {
+        return tagDetecte && Math.abs(meilleurTx) < DEADBAND;
     }
 }

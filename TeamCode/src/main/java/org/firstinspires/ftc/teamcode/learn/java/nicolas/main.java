@@ -16,8 +16,7 @@ public abstract class main extends OpMode {
     turret turret = new turret();
     double forward, strafe, rotation;
     double powerIntake;
-    boolean modeManuel = false;      // false = tourelle auto, true = copilote
-    boolean boutonPrecedent = false; // état du bouton à la boucle d'avant
+
     boolean boutonPlusPrecedent = false;
     boolean boutonMoinsPrecedent = false;
     @Override
@@ -44,42 +43,47 @@ public abstract class main extends OpMode {
         rotation = gamepad1.left_stick_x;
 
         // Commandes des mécanismes
-        powerIntake = gamepad1.right_trigger - gamepad1.left_trigger;
+        powerIntake = gamepad2.right_trigger - gamepad2.left_trigger;
 
         // Envoyer les commandes aux sous-systèmes
         drive.drive(forward, strafe, rotation);
 
         intake.drive(powerIntake, gamepad1.dpad_right);
-// Réglage de la puissance du shooter : b = +0.05, a = -0.05 (un appui = un palier)
-        if (gamepad1.b && !boutonPlusPrecedent) {
+// Puissance du shooter (copilote) : triangle = +0.05, carré = -0.05
+        if (gamepad2.y && !boutonPlusPrecedent) {
             shooter.augmenter();
         }
-        if (gamepad1.a && !boutonMoinsPrecedent) {
+        if (gamepad2.x && !boutonMoinsPrecedent) {
             shooter.diminuer();
         }
-        boutonPlusPrecedent = gamepad1.b;
-        boutonMoinsPrecedent = gamepad1.a;
-        shooter.drive(gamepad1.right_bumper);
-        // Bascule auto / manuel avec gamepad2.y (un appui = un changement)
-        if (gamepad2.y && !boutonPrecedent) {
-            modeManuel = !modeManuel;
-        }
-        boutonPrecedent = gamepad1.y;
+        boutonPlusPrecedent = gamepad2.y;
+        boutonMoinsPrecedent = gamepad2.x;
 
-// Tourelle : manuel (copilote) ou automatique (Limelight)
-        if (modeManuel) {
-            turret.drive(0.4 * gamepad2.right_stick_x);
-        } else if (gamepad1.dpad_left || gamepad1.dpad_down) {
-            double powerTourelle = (gamepad1.dpad_left ? 0.3 : 0.0) - (gamepad1.dpad_down ? 0.3 : 0.0);
-            turret.drive(powerTourelle);
-        } else if (testLimeLight.isTagDetecte()) {
-            turret.driveAuto(testLimeLight.getRotationAuto());
+// Tir (copilote) : bumper droit = tir, bumper gauche = marche arrière
+        shooter.drive(gamepad2.right_bumper, gamepad2.left_bumper);
+
+
+// Joystick du copilote, avec une petite zone morte pour éviter les dérives
+        double stickTourelle = Math.abs(gamepad2.left_stick_x) > 0.05 ? gamepad2.left_stick_x : 0.0;
+
+// Le copilote a la main s'il maintient la croix, ou si aucun tag n'est visible
+        boolean controleCopilote = gamepad2.a || !testLimeLight.isTagDetecte();
+
+        if (controleCopilote) {
+            turret.drive(0.4 * stickTourelle);
         } else {
-            turret.drive(0.0);
+            turret.driveAuto(testLimeLight.getRotationAuto());
         }
         telemetry.addData("Puissance shooter", shooter.getPuissance());
         telemetry.addData("Angle tourelle", turret.getAngle());
         telemetry.addData("Alliance", allianceRouge ? "Rouge" : "Bleue");
+        telemetry.addData("Aligne", testLimeLight.isAligne());
+        telemetry.addData("Tourelle", controleCopilote ? "COPILOTE" : "AUTO (tag suivi)");
         telemetry.update();
+    }
+    @Override
+    public void stop() {
+        turret.drive(0.0);
+        testLimeLight.stop();
     }
 }
