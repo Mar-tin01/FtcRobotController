@@ -1,53 +1,36 @@
 package org.firstinspires.ftc.teamcode.learn.java.nicolas;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class shooter {
 
-    private DcMotor shooterNectar;
-    private DcMotor shooterPollen;
-    private CRServo tourelleNectar;
-    private CRServo tourellePollen;
+    static final double PUISSANCE_DEPART = 0.8; // puissance au démarrage
+    static final double PALIER = 0.05;          // pas de réglage
 
+    private DcMotor shooterPollen;
+    private double puissance = PUISSANCE_DEPART;
 
     public void init(HardwareMap hdMap) {
-        shooterNectar = hdMap.get(DcMotor.class, "shooterNectar");
-        shooterPollen = hdMap.get(DcMotor.class,"shooterPollen");
-        tourelleNectar = hdMap.get(CRServo.class,"tourelleNectar");
-        tourellePollen = hdMap.get(CRServo.class,"tourellePollen");
-
+        shooterPollen = hdMap.get(DcMotor.class, "shooterPollen");
     }
 
-    public void drive( boolean powerShooterNectar, boolean powerShooterPollen, double powerServoNectar, double powerServoPollen) {
-
-// moteur shooter 1 et 2
-        if(powerShooterNectar == true){
-            shooterNectar.setPower(1.0);
-
-        }
-        else {
-            shooterNectar.setPower(0.0);
-        }
-
-        if(powerShooterPollen == true){
-            shooterPollen.setPower(1.0);
-        }
-        else {
-            shooterPollen.setPower(0.0);
-        }
-// servo tourelle
-        tourelleNectar.setPower(powerServoNectar);
-
-        tourellePollen.setPower(powerServoPollen);
-
-
-
+    // Monter la puissance d'un palier (maximum 1.0)
+    public void augmenter() {
+        puissance = Math.min(1.0, Math.round((puissance + PALIER) * 100) / 100.0);
     }
 
+    // Baisser la puissance d'un palier (minimum 0.0)
+    public void diminuer() {
+        puissance = Math.max(0.0, Math.round((puissance - PALIER) * 100) / 100.0);
+    }
 
+    public double getPuissance() {
+        return puissance;
+    }
 
-
-
+    // Le moteur tourne à la puissance choisie tant que le bouton est appuyé
+    public void drive(boolean marche) {
+        shooterPollen.setPower(marche ? puissance : 0.0);
+    }
 }
