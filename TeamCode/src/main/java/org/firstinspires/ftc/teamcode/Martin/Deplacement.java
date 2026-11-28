@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Martin;
 
 // Déplacement autonome vers une cible (x mm, y mm, cap rad) par correcteur P.
-public class deplacement {
+public class Deplacement {
 
     private final Odometrie odo;
     private final Mecanum base;
