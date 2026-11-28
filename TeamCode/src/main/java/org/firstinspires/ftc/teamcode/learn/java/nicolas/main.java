@@ -79,6 +79,7 @@ public abstract class main extends OpMode {
         telemetry.addData("Alliance", allianceRouge ? "Rouge" : "Bleue");
         telemetry.addData("Aligne", testLimeLight.isAligne());
         telemetry.addData("Tourelle", controleCopilote ? "COPILOTE" : "AUTO (tag suivi)");
+        telemetry.addData("Puissance moteur 2", shooter.getPuissanceMoteur2());
         telemetry.update();
     }
     @Override
